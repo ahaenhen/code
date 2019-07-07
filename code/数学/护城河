@@ -1,0 +1,76 @@
+#include <iostream>
+#include <cmath>
+#include <cstring>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+struct ss {
+    double x,y;
+}point[5005],stackk[5004];
+int n,top;
+double dis(ss p1,ss p2)//求两点之间的距离
+{
+    return sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+}
+
+double jude(ss p1,ss p2,ss p0)//大于0说明p1在p2的顺时针方向 小于0说明p1在p2的逆时针方向上
+{
+    return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+int cmp(ss p1,ss p2)    //判极角的大小
+{
+    double t=jude(p1,p2,point[1]);
+    if(t==0)
+        return dis(p1,point[1])<dis(p2,point[1]);
+    else if (t>0) return 1;
+    else return 0;
+}
+
+void Convex()
+{
+    int i;
+    ss temp;
+    for (i=2;i<=n;i++)
+        if(point[i].y<point[1].y||((point[i].y==point[1].y)&&point[i].x<point[1].x))
+        {
+            temp=point[i];
+            point[i]=point[1];
+            point[1]=temp;
+        }
+        sort(point+2,point+n+1,cmp);
+
+        stackk[1]=point[1];
+        stackk[2]=point[2];
+        top=2;
+        for (i=3;i<=n;i++)
+        {
+            while (top>=2&&jude(point[i],stackk[top],stackk[top-1])>=0.0)
+            {
+                top--;
+            }
+            stackk[++top]=point[i];
+        }
+}
+int main()
+{
+    int i;
+    double ans;
+    cin>>n;
+    for (i=1;i<=n;i++)
+    {
+        scanf("%lf%lf",&point[i].x,&point[i].y);
+    }
+    if(n==1)printf("0.00\n");
+    else if(n==2)printf("%0.2lf\n",dis(point[1],point[2]));
+    else {
+        ans=0.0;
+        Convex();
+        for (i=1;i<top;i++)
+        {
+            ans+=dis(stackk[i],stackk[i+1]);
+        }
+        ans+=dis(stackk[top],stackk[1]);
+        printf("%0.2lf\n",ans);
+    }
+    return 0;
+}
