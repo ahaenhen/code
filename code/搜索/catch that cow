@@ -1,0 +1,38 @@
+#include<iostream>
+#include<queue>
+#define INF 1000000
+using namespace std;
+queue<int>q;
+int vis[1000005]={0};
+int main(){
+    int a,b,cot,ans,t,mark=0,noww;
+    cin>>a>>b;
+    if(a==b)cout<<0<<endl;
+    else{
+        if(a+1==b||a-1==b||a*2==b)cout<<1<<endl;
+        else{
+            q.push(a);
+            vis[a]=1;
+            while(!q.empty()){
+                ans=q.front();
+                q.pop();
+                if(ans-1>=0){
+                    noww=ans-1;
+                    if(!vis[noww]){vis[noww]=vis[ans]+1;q.push(noww);}
+                    if(noww==b){cout<<vis[noww]-1<<endl;break;}
+                }
+                if(ans+1<INF){
+                    noww=ans+1;
+                    if(!vis[noww]){vis[noww]=vis[ans]+1;q.push(noww);}
+                    if(noww==b){cout<<vis[noww]-1<<endl;break;}
+                }
+                if(ans*2<INF){
+                    noww=ans*2;
+                    if(!vis[noww]){vis[noww]=vis[ans]+1;q.push(noww);}
+                    if(noww==b){cout<<vis[noww]-1<<endl;break;}
+                }
+            }
+        }
+    }
+    return 0;
+}
