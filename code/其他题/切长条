@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+typedef pair<ll,ll>p;
+set<p>s;
+int main(){
+    int n;
+    ll y,x;
+    cin>>n;
+    for(int i=0;i<n;i++){
+        scanf("%lld%lld",&x,&y);
+        p pp(x,x+y);
+        s.insert(pp);
+    }
+    ll ans=0;
+    while(!s.empty()){
+        set<p>::iterator it=s.end(),now,itt;it--;
+        //cout<<it->first<<' '<<it->second<<endl;
+        for(itt=s.begin();itt!=now;){
+            if(itt->first<=it->first&&itt->second>it->first){s.erase(itt++);}
+            else itt++;
+            now=s.end();
+        }
+        ans++;
+    }
+    cout<<ans<<endl;
+}
