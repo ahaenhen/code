@@ -1,0 +1,99 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int tot=500003;
+const int maxn=1000003;
+struct ac{
+    struct aa{
+        int next[26],fail,cnt;
+    }state[tot];
+    int sizee;
+    queue<int>q;
+
+    void init(){
+        while(!q.empty())q.pop();
+        for(int i=0;i<tot;i++){
+            memset(state[i].next,0,sizeof(state[i].next));
+            state[i].fail=state[i].cnt=0;
+        }
+        sizee=1;
+    }
+
+    void insertt(char *s){
+        int n=strlen(s),now=0;
+        for(int i=0;i<n;i++){
+            char c=s[i];
+            if(!state[now].next[c-'a'])state[now].next[c-'a']=sizee++;
+            now=state[now].next[c-'a'];
+        }
+        state[now].cnt++;
+    }
+
+    void build(){
+        state[0].fail=-1;
+        q.push(0);
+        while(q.size()){
+            int u=q.front();
+            q.pop();
+            for(int i=0;i<26;i++){
+                if(state[u].next[i]){
+                    if(u==0)state[state[u].next[i]].fail=0;
+                    else{
+                        int v=state[u].fail;
+                        while(v!=-1){
+                            if(state[v].next[i]){
+                                state[state[u].next[i]].fail=state[v].next[i];
+                                break;
+                            }
+                            v=state[v].fail;
+                        }
+                        if(v==-1)state[state[u].next[i]].fail=0;
+                    }
+                    q.push(state[u].next[i]);
+                }
+            }
+        }
+    }
+
+    int get(int u){
+        int res=0;
+        while(u){
+            res+=state[u].cnt;
+            state[u].cnt=0;
+            u=state[u].fail;
+        }
+        return res;
+    }
+
+    int match(char *s){
+        int n=strlen(s);
+        int res=0,now=0;
+        for(int i=0;i<n;i++){
+            char c=s[i];
+            if(state[now].next[c-'a'])now=state[now].next[c-'a'];
+            else{
+                int p=state[now].fail;
+                while(p!=-1&&state[p].next[c-'a']==0)p=state[p].fail;
+                if(p==-1)now=0;
+                else now=state[p].next[c-'a'];
+            }
+            if(state[now].cnt)res+=get(now);
+        }
+        return res;
+    }
+}aho;
+int t,N;
+char S[maxn];
+int main(){
+    cin>>t;
+    while(t--){
+        aho.init();
+        scanf("%d",&N);
+        for(int i=0;i<N;i++){
+            scanf("%s",S);
+            aho.insertt(S);
+        }
+        aho.build();
+        scanf("%s",S);
+        printf("%d\n",aho.match(S));
+    }
+}

@@ -1,0 +1,50 @@
+#include <iostream>
+#include <cstdio>
+#include<cstring>
+#include<cmath>
+using namespace std;
+const int maxn=1004;
+int dfn[maxn],low[maxn],head[maxn];
+int cnt,num,ans,tot;
+struct edge{
+    int to,next,w;
+}edges[2000020];
+void tarjan(int u,int e){
+    dfn[u]=low[u]=++cnt;
+    for(int i=head[u];i!=-1;i=edges[i].next){
+        int v=edges[i].to;
+        if(i==(e^1))continue;
+        if(!dfn[v]){
+            tarjan(v,i);
+            low[u]=min(low[v],low[u]);
+            if(low[v]>dfn[u])ans=min(ans,edges[i].w);
+        }
+        else low[u]=min(low[u],dfn[v]);
+    }
+    num++;
+}
+int main(){
+    int n,m,a,b,c;
+    while(scanf("%d%d",&n,&m)&&n+m){
+        memset(head,-1,sizeof(head));
+        memset(dfn,0,sizeof(dfn));
+        cnt=num=tot=0;ans=100000;
+        for(int i=0;i<m;i++){
+            scanf("%d%d%d",&a,&b,&c);
+            edges[tot].to=b;
+            edges[tot].next=head[a];
+            edges[tot].w=c;
+            head[a]=tot++;
+            edges[tot].to=a;
+            edges[tot].next=head[b];
+            edges[tot].w=c;
+            head[b]=tot++;
+        }
+        tarjan(1,-1);
+        if(num<n)printf("0\n");
+        else if(ans==100000)printf("-1\n");
+        else if(ans==0)printf("1\n");
+        else printf("%d\n",ans);
+    }
+   return 0;
+}

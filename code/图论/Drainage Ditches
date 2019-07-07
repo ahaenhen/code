@@ -1,0 +1,51 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n,ma;
+const int INF=0x7fffff;
+const int maxn=204;
+queue<int>q;
+int m[maxn][maxn],pre[maxn],flow[maxn],maxflow;
+inline int bfs(int s,int t){
+    while(!q.empty())q.pop();
+    for(int i=1;i<=n;i++)pre[i]=-1;
+    pre[s]=0;
+    q.push(s);
+    flow[s]=INF;
+    while(!q.empty()){
+        int v=q.front();
+        q.pop();
+        if(v==t)break;
+        for(int i=1;i<=n;i++){
+            if(m[v][i]>0&&pre[i]==-1){
+                pre[i]=v;
+                flow[i]=min(flow[v],m[v][i]);
+                q.push(i);
+            }
+        }
+    }
+    if(pre[t]==-1)return -1;
+    else return flow[t];
+}
+void EK(int s,int t){
+    int inc=0;
+    while((inc=bfs(s,t))!=-1){
+        int k=t;
+        while(k!=s){
+            int last=pre[k];
+            m[last][k]-=inc;
+            m[k][last]+=inc;
+            k=last;
+        }
+        maxflow+=inc;
+    }
+}
+int main(){
+    cin>>ma>>n;
+    for(int i=1;i<=ma;i++){
+        int z,x,y;
+        cin>>x>>y>>z;
+        m[x][y]+=z;
+    }
+    EK(1,n);
+    cout<<maxflow<<endl;
+}

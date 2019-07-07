@@ -1,0 +1,14 @@
+#include<iostream>
+using namespace std;
+
+int main()
+{
+    int n,l1,r1,l2,r2,mod;
+    cin>>n;
+    while(n--){
+        cin>>l1>>r1>>l2>>r2>>mod;
+        if(r2-l2+1>=mod)cout<<"LOSE"<<endl;
+        else cout<<"WIN"<<endl;
+    }
+    return 0;
+}

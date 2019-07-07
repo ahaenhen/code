@@ -1,0 +1,16 @@
+#include<iostream>
+#include<cmath>
+#include<cstdio>
+using namespace std;
+int a[2004],dp[2004][2004];
+int main(){
+  int n;
+  scanf("%d",&n);
+  for(int i=1;i<=n;i++)scanf("%d",&a[i]);
+  for(int i=n;i>=1;i--){
+    for(int j=i;j<=n;j++){
+      dp[i][j]=max(dp[i+1][j]+a[i]*(n+i-j),dp[i][j-1]+a[j]*(n+i-j));
+    }
+  }
+  cout<<dp[1][n]<<endl;
+}

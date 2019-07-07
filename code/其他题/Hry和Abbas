@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long LL;
+const int maxn=1e5+10;
+int vis[maxn],a[maxn];
+int gcd(int x,int y){
+  return y==0?x:gcd(y,x%y);
+}
+int main(){
+  int t,n,m;
+  scanf("%d",&t);
+  while(t--){
+    scanf("%d%d",&n,&m);
+    memset(vis,0,sizeof(vis));
+    for(int i=1;i<=m;i++)scanf("%d",&a[i]);
+    sort(a+1,a+m+1);
+    for(int i=1;i<=n-(a[m]-a[1]);i++)vis[i]++;
+    for(int i=2;i<=m;i++){
+      for(int j=1;j<=a[i]-a[i-1];j++) vis[j]++;
+    }
+    for(int i=1;i<=n;i++){
+      if(vis[i]==0)puts("0");
+      else{
+        int num=gcd(vis[i],n);
+        printf("%d/%d\n",vis[i]/num,n/num);
+      }
+    }
+  }
+  return 0;
+}

@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=1e5+5;
+int dfn[maxn],low[maxn],ans[maxn],color[maxn],colornum[maxn];
+bool vis[maxn];
+int cnt=0,colorcnt=0;
+stack<int>s;
+int to[maxn];
+void tarjan(int u){
+    cnt++;
+    dfn[u]=low[u]=cnt;
+    s.push(u);
+    vis[u]=true;
+    int t=to[u];
+    if(dfn[t]==0){
+        tarjan(t);
+        low[u]=min(low[u],low[t]);
+    }
+    else if(vis[t]){
+        low[u]=min(low[u],low[t]);
+    }
+    if(dfn[u]==low[u]){
+        colorcnt++;
+        while(s.top()!=u){
+            int te=s.top();
+            s.pop();
+            color[te]=colorcnt;
+            colornum[colorcnt]++;
+            vis[te]=false;
+        }
+        s.pop();
+        color[u]=colorcnt;
+        colornum[colorcnt]++;
+        vis[u]=false;
+    }
+}
+int findd(int u){
+    if(to[u]==u)return 1;
+    if(ans[to[u]])return ans[to[u]]+1;
+    else return findd(to[u])+1;
+}
+int main(){
+    int n,x;
+    cin>>n;
+    for(int i=1;i<=n;i++){
+        cin>>x;
+        to[i]=x;
+    }
+    for(int i=1;i<=n;i++){
+        if(dfn[i]==0)tarjan(i);
+    }
+    for(int i=1;i<=n;i++){
+        if(colornum[color[i]]>1)ans[i]=colornum[color[i]];
+    }
+    for(int i=1;i<=n;i++)if(ans[i]==0)ans[i]=findd(i);
+    for(int i=1;i<=n;i++)cout<<ans[i]<<endl;
+}
+

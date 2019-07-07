@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+using namespace std;
+int M;
+typedef long long LL;
+
+LL power(LL a,LL b){
+    LL ans = 1;
+    a %= M;
+    while(b){
+        if(b & 1){
+            ans = ans * a % M;
+            b--;
+        }
+        b >>= 1;
+        a = a * a % M;
+    }
+    return ans;
+}
+
+LL sum(LL a,LL n){   //等比数列求和
+    if(n == 1) return a;
+    LL t = sum(a,n/2);
+    if(n & 1) {
+        LL cur = power(a,n/2+1);
+        t = (t + t * cur % M) % M;
+        t = (t + cur) % M;
+    }
+    else{
+        LL cur = power(a,n/2);
+        t = (t + t * cur % M) % M;
+    }
+    return t;
+}
+
+int main(){
+    LL n,p,q;
+    int t;
+    cin>>t;
+    while(t--){
+     cin>>q>>n>>M;
+        cout<<sum(q,n)<<endl;
+    }
+    return 0;
+}

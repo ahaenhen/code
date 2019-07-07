@@ -1,0 +1,17 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    int n,m,o=0,g=0,ans=0,x;
+    scanf("%d%d",&n,&m);
+    for(int i=0;i<n;i++){
+        scanf("%d",&x);
+        if(x%2)g++;
+        else o++;
+    }
+    for(int i=0;i<m;i++){
+        scanf("%d",&x);
+        if(x%2&&o)o--,ans++;
+        else if(x%2==0&&g)g--,ans++;
+    }
+    cout<<ans<<endl;
+}

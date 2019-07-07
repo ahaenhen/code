@@ -1,0 +1,65 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int INF=0x3f3f3f3f;
+int n,mm,s,d;
+int vis[505];
+int pre[505],dis[505],m[504][505],val[505],zv[505],cnt[505];
+void dj(){
+    memset(dis,INF,sizeof(dis));
+    for(int i=0;i<n;i++)pre[i]=i;
+    dis[s]=0;
+    zv[s]=val[s];
+    cnt[s]=1;
+    for(int i=1;i<n;i++){
+        int minn=INF,v=-1;
+        for(int j=0;j<n;j++){
+            if(!vis[j]&&dis[j]<minn){
+                minn=dis[j];
+                v=j;
+            }
+        }
+        if(v==-1)break;
+        vis[v]=1;
+        for(int j=0;j<n;j++){
+            if(vis[j])continue;
+                if(dis[j]>m[v][j]+dis[v]){
+                    dis[j]=m[v][j]+dis[v];
+                    pre[j]=v;
+                    zv[j]=zv[v]+val[j];
+                    cnt[j]=cnt[v];
+                }
+                else if(dis[j]==m[v][j]+dis[v]){
+                   if(zv[j]<zv[v]+val[j]){
+                        zv[j]=zv[v]+val[j];
+                        pre[j]=v;
+                   }
+                   cnt[j]+=cnt[v];
+                }
+
+        }
+        //cout<<"ifajo"<<endl;
+    }
+}
+int main(){
+    cin>>n>>mm>>s>>d;
+    int x,y,z;
+    memset(m,INF,sizeof(m));
+    for(int i=0;i<n;i++)cin>>val[i];
+    while(mm--){
+        cin>>x>>y>>z;
+        m[y][x]=m[x][y]=z;
+    }
+    dj();
+    cout<<cnt[d]<<' '<<zv[d]<<endl;
+     int flag[505],j=0;
+  flag[j++]=d;
+  for(;pre[d]!=d;j++)
+  {
+    d=pre[d];
+    flag[j]=d;
+  }
+  for(int i=j-1;i>0;i--)
+    printf("%d ",flag[i]);
+  printf("%d\n",flag[0]);
+    return 0;
+}

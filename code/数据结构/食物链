@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+const int maxn=150010;
+int uset[maxn],a[maxn],b[maxn];
+void init(int n){
+	for(int i=0;i<n;i++)uset[i]=i;
+}
+int findd(int x){
+	if(x!=uset[x])uset[x]=findd(uset[x]);
+	return uset[x];
+}
+void unionset(int x,int y){
+    x=findd(x),y=findd(y);
+	if(x==y)return;
+	uset[y]=x;
+}
+
+bool same(int a,int b){
+    return findd(a)==findd(b);
+}
+int main(){
+    int n,k,a,x,y;
+    cin>>n>>k;
+    int ans=0;
+    init(n*3);
+    for(int i=0;i<k;i++){
+        scanf("%d%d%d",&a,&x,&y);
+        if(x>n||y>n){ans++;continue;}
+        if(a==2&&x==y){ans++;continue;}
+         if(a==1){
+            if(same(x,y+n)||same(x,y+n*2))ans++;
+            else{
+                unionset(x,y);
+                unionset(x+n,y+n);
+                unionset(x+n*2,y+n*2);
+            }
+        }
+        else{
+            if(same(x,y)||same(x,y+n*2))ans++;
+            else{
+                unionset(x,y+n);
+                unionset(x+n,y+n*2);
+                unionset(x+n*2,y);
+            }
+        }
+    }
+    cout<<ans<<endl;
+}

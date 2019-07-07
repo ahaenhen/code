@@ -1,0 +1,25 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    set<int>s;
+    vector<int>v;
+    for(int i=0;i<19;i++){
+        s.insert(pow(2,i)-1);
+    }
+    int x;
+    cin>>x;
+    if(s.find(x)!=s.end()){
+        cout<<0<<endl;
+        return 0;
+    }
+    int j=19;
+    puts("39");
+    while(j--){
+       int t=log2(x)+1;
+        x^=(int)(pow(2,t)-1);
+        x++;
+        printf("%d ",t);
+    }
+    cout<<log2(x)+1;
+	return 0;
+}

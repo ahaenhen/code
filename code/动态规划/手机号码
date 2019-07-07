@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll dp[11][3][10][2][2];
+int a[100];
+ll dfs(int pos,int len,int pre,bool if8,bool if4,bool li){
+    if(pos<0)return (len>2&&!(if8&&if4));
+    if(if8&&if4)return 0;
+    if(li&&dp[pos][len][pre][if8][if4]+1)return dp[pos][len][pre][if8][if4];
+    int maxn=li?9:a[pos],l;
+    ll cnt=0;
+    for(int i=maxn;i>=0;--i){
+        if(len>=3)l=3;
+        else if(i==pre)l=len+1;
+        else l=1;
+        cnt+=dfs(pos-1,l,i,if8||i==8,if4||i==4,li||i<maxn);
+    }
+    if(li)dp[pos][len][pre][if8][if4]=cnt;
+    return cnt;
+}
+ll solve(ll n){
+    if (n <= 9999999999) return 0;
+    int i=0;
+    while(n){a[i++]=n%10;n/=10;}
+    ll sum = 0;
+    for (int i=1;i<=a[10];++i)
+        sum+=dfs(9,1,i,i==8,i==4,i<a[10]);
+    return sum;
+}
+int main(){
+    memset(dp,-1,sizeof dp);
+    ll aa,bb;
+    cin>>aa>>bb;
+    cout<<solve(bb)-solve(aa-1)<<endl;
+}

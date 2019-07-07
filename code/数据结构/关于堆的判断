@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+using namespace std;
+int cnt,a[10004];
+void build(int x){
+    a[++cnt]=x;
+    int t=cnt;
+    while(t>1&&a[t/2]>a[t]){swap(a[t/2],a[t]);t/=2;}
+}
+map<int,int>q;
+int main(){
+    int n,m,x,y;
+    cin>>n>>m;
+    int t=n;
+    while(n--){
+        cin>>x;
+        build(x);
+    }
+
+    for(int i=1;i<=t;i++){
+        q[a[i]]=i;
+    }
+    string s,tt;
+    while(m--){
+        cin>>x;
+        cin>>s;
+        if(s=="and"){
+            cin>>y>>tt>>tt;
+            if(q[x]/2==q[y]/2)cout<<'T'<<endl;
+            else cout<<'F'<<endl;
+        }
+        else{
+            cin>>tt>>tt;
+            if(tt=="root"){
+                if(q[x]==1)cout<<'T'<<endl;
+                else cout<<'F'<<endl;
+
+            }
+            else if(tt=="parent"){
+                cin>>tt>>y;
+                if(q[x]==q[y]/2)cout<<'T'<<endl;
+                else cout<<'F'<<endl;
+
+            }
+            else if(tt=="child"){ 
+                cin>>tt>>y;
+                if(q[x]/2==q[y])cout<<'T'<<endl;
+                else cout<<'F'<<endl;
+            }
+        }
+    }
+    return 0;
+}

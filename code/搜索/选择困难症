@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+long long ans,all[1704];
+int k,m;
+int c[12],a[12][1705];
+void dfs(int id,int sum){
+    if(id>k)return;
+    for(int i=0;i<=c[id];i++){
+        if(sum+a[id][i]>m){
+            ans+=all[id+1]*(c[id]-i+1);
+            return;
+        }
+        dfs(id+1,sum+a[id][i]);
+    }
+}
+int main(){
+    while(~scanf("%d%d",&k,&m)){
+        ans=0;
+    for(int i=1;i<=k;i++){
+        int x;
+        scanf("%d",&c[i]);
+        for(int j=1;j<=c[i];j++)scanf("%d",&a[i][j]);
+        sort(a[i]+1,a[i]+c[i]+1);
+    }
+    all[k+1]=1;
+    for(int i=k;i>=1;i--)all[i]=all[i+1]*(c[i]+1);
+    dfs(1,0);
+    cout<<ans<<endl;
+    }
+}

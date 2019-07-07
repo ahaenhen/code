@@ -1,0 +1,62 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=5e5+5;
+struct Edge{
+    int to,next;
+}edge[maxn<<1];
+int head[maxn],fa[maxn][20],deep[maxn],tot;
+void add(int u,int v){
+    edge[tot].to=v;
+    edge[tot].next=head[u];
+    head[u]=tot++;
+}
+void init(){
+    tot=0;
+    memset(head,-1,sizeof(head));
+}
+void bfs(int u){
+    queue<int>q;
+    deep[u]=0;
+    fa[u][0]=u;
+    q.push(u);
+    while(!q.empty()){
+        int t=q.front();
+        q.pop();
+        for(int i=1;i<20;++i)
+            fa[t][i]=fa[fa[t][i-1]][i-1];
+        for(int i=head[t];i!=-1;i=edge[i].next){
+            int v=edge[i].to;
+            if(v==fa[t][0])continue;
+            deep[v]=deep[t]+1;
+            fa[v][0]=t;
+            q.push(v);
+        }
+    }
+}
+int LCA(int u,int v){
+    if(deep[u]>deep[v])swap(u,v);
+    for(int t=deep[v]-deep[u],i=0;t;t>>=1,++i)if(t&1)v=fa[v][i];
+    if(u==v)return u;
+    for(int i=19;i>=0;--i){
+        if(fa[u][i]==fa[v][i])continue;
+        u=fa[u][i];
+        v=fa[v][i];
+    }
+    return fa[u][0];
+}
+
+int main(){
+    int n,m,x,y,t;
+    scanf("%d%d%d",&n,&m,&t);
+    init();
+    for(int i=1;i<n;++i){
+        scanf("%d%d",&x,&y);
+        add(x,y);
+        add(y,x);
+    }
+    bfs(t);
+    while(m--){
+        scanf("%d%d",&x,&y);
+        printf("%d\n",LCA(x,y));
+    }
+}

@@ -1,0 +1,17 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    int t,n,k,x,tt,sum;
+    cin>>t;
+    while(t--){
+        sum=0;
+        scanf("%d%d",&n,&k);
+        for(int i=1;i<=n;i++){
+            scanf("%d",&x);
+            if(i==k)tt=x;
+            else sum^=x;
+        }
+        if(tt>sum)cout<<"Yes"<<endl;
+        else cout<<"No"<<endl;
+    }
+}

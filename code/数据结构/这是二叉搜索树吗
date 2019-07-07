@@ -1,0 +1,55 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<string>
+#include<map>
+using namespace std;
+#include<vector>
+vector<int>ans,q;
+void check1(int s,int e){
+    if(s>e)return;
+    int i=s+1,j=e;
+    while(i<=e&&q[i]<q[s])i++;
+    while(j>s&&q[j]>=q[s])j--;
+    if(i-1!=j)return;
+    check1(s+1,i-1);
+    check1(j+1,e);
+    cout<<q[s]<<endl;
+    ans.push_back(q[s]);
+}
+void check2(int s,int e){
+    if(s>e)return;
+    int i=s+1,j=e;
+    while(i<=e&&q[i]>=q[s])i++;
+    while(j>s&&q[j]<q[s])j--;
+    if(i-1!=j)return;
+    check2(s+1,i-1);
+    check2(j+1,e);
+    cout<<q[s]<<endl;
+    ans.push_back(q[s]);
+}
+int main(){
+    int n,x;
+    cin>>n;
+    int t=n;
+    while(n--){
+        cin>>x;
+        q.push_back(x);
+    }
+    check1(0,t-1);
+    if(ans.size()!=t){
+        ans.clear();
+        check2(0,t-1);
+    }
+    if(ans.size()==t){
+        cout<<"YES"<<endl;
+        for(int i=0;i<ans.size();i++){
+            cout<<ans[i];
+            if(i==t-1)cout<<endl;
+            else cout<<' ';
+        }
+        return 0;
+    }
+    cout<<"NO"<<endl;
+    return 0;
+}

@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+#define LL long long
+using namespace std;
+
+int n,m;
+int a[105][105],dir[4][2]={1, 0, -1, 0, 0, 1, 0, -1},dp[105][105];
+int ans=0,cnt=1;
+struct node{
+    int v,x,y;
+}b[10005];
+bool cmp(node d,node c){
+    return d.v<c.v;
+}
+int main(){
+    cin>>n>>m;
+    int cnt=0;
+
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            scanf("%d",&a[i][j]);
+            b[++cnt].v=a[i][j];
+            b[cnt].x=i;
+            b[cnt].y=j;
+            dp[i][j]=1;
+        }
+    }
+
+    sort(b+1,b+cnt+1,cmp);
+
+    for(int i=1;i<=cnt;i++){
+        int xx=b[i].x,yy=b[i].y;
+
+        for(int j=0;j<4;j++){
+            int dx = b[i].x + dir[j][0];
+		    int dy = b[i].y + dir[j][1];
+		    //cout<<a[xx][yy]<<' '<<a[dx][dy]<<endl;
+
+		    if(a[xx][yy]>a[dx][dy]&&dx >= 0 && dx < n && dy >= 0 && dy < m ){
+                 dp[xx][yy]=max(dp[xx][yy],dp[dx][dy]+1);
+		    }
+
+        }
+       //cout<<b[i].v<<' '<<dp[xx][yy]<<endl;
+       ans=max(dp[xx][yy],ans);
+    }
+    cout<<ans<<endl;
+}

@@ -1,0 +1,89 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int maxm=1e3+5;
+const int maxn=1e5+5;
+const ll mod=998244353;
+ll quick_pow(ll x,ll n)
+{
+    ll res=1;
+    while(n)
+    {
+        if(n&1)
+            res=res*x%mod;
+        x=x*x%mod;
+        n>>=1;
+    }
+    return res;
+}
+int main()
+{
+    ll n,k;
+    while(~scanf("%lld%lld",&n,&k))
+    {
+        ll ans=0;
+        if(k==1)
+        {
+            puts("0");
+            continue;
+        }
+        if(k%2)
+        {
+            ans=((quick_pow(n-1,k)-(n-1))%mod+mod)%mod;
+            ans=(ans*quick_pow(n,mod-2))%mod;
+        }
+        else
+        {
+            ans=((quick_pow(n-1,k)+(n-1))%mod+mod)%mod;
+            ans=(ans*quick_pow(n,mod-2))%mod;
+        }
+        printf("%lld\n",ans);
+    }
+}
+
+//解法二
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+inline int read()
+{
+    char c=getchar();int x=0;
+    while(c<'0'||c>'9')c=getchar();
+    while(c>='0'&&c<='9'){x=x*10+c-'0';c=getchar();}
+    return x;
+}
+ 
+typedef vector<ll> vec;
+typedef vector<vec> mat;
+const int mod = 998244353;
+const int N = 2;
+mat mul(mat a,mat b)
+{
+    mat c(N,vec(N));
+    for(int i=0;i<N;++i)
+        for(int j=0;j<N;++j)
+            for(int k=0;k<N;++k)
+                c[i][j] = (c[i][j] + a[i][k] * b[k][j]) % mod;
+    return c;
+}
+mat fpow(mat a,ll n)
+{
+    mat ret(N,vec(N));
+    for(int i=0;i<N;++i) ret[i][i] = 1;
+    while(n)
+    {
+        if(n&1) ret=mul(ret,a);
+        a=mul(a,a);
+        n>>=1;
+    }
+    return ret;
+}
+ 
+int main()
+{
+    int n = read(), k = read();
+    mat a(2,vec(2));
+    a[0][0] = n-2, a[0][1] = n-1, a[1][0] = 1;
+    mat b = fpow(a,k);
+    cout<<b[1][1]<<endl;
+}

@@ -1,0 +1,20 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    long long n,ans=0;
+    cin>>n;
+    while(n--){
+        long long x,res=0,re=0;
+        scanf("%lld",&x);
+        x=abs(x);
+        while(x){
+            if(x&1)++res;
+            else ++re;
+            x>>=1;
+        }
+        if(res>re)++ans;
+        else --ans;
+    }
+    cout<<ans<<endl;
+}

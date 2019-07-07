@@ -1,0 +1,19 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+using namespace std;
+int sg(int n){
+    int len=0;
+    while(n%2==0)len++,n>>=1;
+    return len;
+}
+int main(){
+    int n,x,ans=0;
+    scanf("%d",&n);
+    for(int i=0;i<n;i++){
+        scanf("%d",&x);
+        ans^=sg(x);
+    }
+    if(ans)cout<<"Win"<<endl;
+    else cout<<"Lose"<<endl;
+}

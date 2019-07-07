@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define N 50010
+inline int read(){
+    int x=0,f=1;char ch=getchar();
+    while(ch<'0'||ch>'9'){if(ch=='-') f=-1;ch=getchar();}
+    while(ch>='0'&&ch<='9') x=x*10+ch-'0',ch=getchar();
+    return x*f;
+}
+int n,m,q,a[N],w[N],h[N],num=0,fa[N],dep[N],son[N],sizee[N],top[N],id[N],dfn=0;
+struct edge{
+    int to,next;
+}ed[N<<1];
+struct node{
+    int add,x;
+}tree[N<<2];
+void build(int p,int l,int r){
+    tree[p].add=0;
+    if(l==r){tree[p].x=w[l];return;}
+    int mid=l+r>>1;
+    build(p<<1,l,mid);build(p<<1|1,mid+1,r);
+}
+void pushdown(int p){
+    if(!tree[p].add) return;
+    tree[p<<1].add+=tree[p].add;tree[p<<1|1].add+=tree[p].add;
+    tree[p<<1].x+=tree[p].add;tree[p<<1|1].x+=tree[p].add;
+    tree[p].add=0;
+}
+void add1(int p,int l,int r,int x,int y,int val){
+    if(x<=l&&r<=y){tree[p].add+=val;tree[p].x+=val;return;}
+    int mid=l+r>>1;pushdown(p);
+    if(x<=mid) add1(p<<1,l,mid,x,y,val);
+    if(y>mid) add1(p<<1|1,mid+1,r,x,y,val);
+}
+int query(int p,int l,int r,int x){
+    if(l==r) return tree[p].x;
+    int mid=l+r>>1;pushdown(p);
+    if(x<=mid) return query(p<<1,l,mid,x);
+    else return query(p<<1|1,mid+1,r,x);
+}
+void doadd(int x,int y,int val){
+    while(top[x]!=top[y]){
+        if(dep[top[x]]<dep[top[y]]) swap(x,y);
+        add1(1,1,n,id[top[x]],id[x],val);
+        x=fa[top[x]];
+    }
+    if(id[x]>id[y]) swap(x,y);
+    add1(1,1,n,id[x],id[y],val);
+}
+void dfs1(int x){
+    sizee[x]=1;
+    for(int i=h[x];i;i=ed[i].next){
+        int y=ed[i].to;
+        if(fa[x]==y)continue;
+        fa[y]=x;dep[y]=dep[x]+1;dfs1(y);sizee[x]+=sizee[y];
+        if(sizee[y]>sizee[son[x]])son[x]=y;
+    }
+}
+void dfs2(int x,int tp){
+    id[x]=++dfn;top[x]=tp;w[dfn]=a[x];
+    if(son[x])dfs2(son[x],tp);
+    for(int i=h[x];i;i=ed[i].next){
+        int y=ed[i].to;
+        if(y==fa[x]||y==son[x])continue;
+        dfs2(y,y);
+    }
+}
+int main(){
+    while(~scanf("%d%d%d",&n,&m,&q)){
+        memset(h,0,sizeof(h));memset(fa,0,sizeof(fa));
+        memset(son,0,sizeof(son));num=dfn=0;
+        for(int i=1;i<=n;++i)scanf("%d",&a[i]);
+        //cout<<"po-a"<<endl;
+        for(int i=1;i<n;++i){
+            int x=read(),y=read();
+            ed[++num].to=y;ed[num].next=h[x];h[x]=num;
+            ed[++num].to=x;ed[num].next=h[y];h[y]=num;
+        }
+
+        dep[1]=1;dfs1(1);dfs2(1,1);build(1,1,n);
+        while(q--){
+            char op[1];scanf("%s",op);int x=read();
+            if(op[0]=='I'){int y=read(),val=read();doadd(x,y,val);}
+            if(op[0]=='D'){int y=read(),val=read();doadd(x,y,-val);}
+            if(op[0]=='Q') printf("%d\n",query(1,1,n,id[x]));
+        }
+    }
+    return 0;
+}

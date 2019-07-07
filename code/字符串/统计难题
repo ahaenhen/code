@@ -1,0 +1,55 @@
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<queue>
+#include<cstring>
+using namespace std;
+const int tot=500003;
+const int maxn=1000003;
+struct tree{
+    struct aa{//next是该点的下个节点的节点序号
+        int next[26],sum,cnt;//fail是其他路中这个字母的节点序号
+    }state[tot];//cnt是这串字符中到该点有多少字符
+    int sizee;//字典树的节点个数
+    queue<int>q;
+    void init(){
+        while(!q.empty())q.pop();
+        for(int i=0;i<tot;i++){
+            memset(state[i].next,0,sizeof(state[i].next));
+            state[i].sum=state[i].cnt=0;
+        }
+        sizee=1;
+    }
+    void insertt(string s){
+        int n=s.size(),now=0;
+        for(int i=0;i<n;i++){
+           int c=s[i]-'a';
+           if(!state[now].next[c]){state[now].next[c]=sizee++;}
+            now=state[now].next[c];
+            state[now].sum++;
+        }
+    }
+    int searc(string s){
+        int n=s.size(),now=0,flag=1;
+        for(int i=0;i<n;i++){
+            int c=(s[i]-'a');
+            if(state[now].next[c])now=state[now].next[c];
+            else {return 0;}
+        }
+        return state[now].sum;
+    }
+}aho;
+int t,N;
+string S;
+int main(){
+        aho.init();
+        while(getline(cin,S)){
+            if(S=="")break;
+            aho.insertt(S);
+        }
+        while(getline(cin,S)){
+            if(S=="")break;
+            printf("%d\n",aho.searc(S));
+        }
+    }
+
