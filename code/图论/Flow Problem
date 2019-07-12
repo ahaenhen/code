@@ -1,0 +1,66 @@
+#include<iostream>
+#include<cstring>
+#include<queue>
+using namespace std;
+int n,ma;
+const int INF=0x7fffff;
+const int maxn=1002;
+queue<int>q;
+int m[maxn][maxn],pre[maxn],flow[maxn],maxflow;
+//m记录残留网络的容量
+//pre标记从源点到当前节点实际还剩多少流量可用
+//flow标记从源点到当前节点实际还剩多少流量可用
+int bfs(int s,int t){         //找增广路径
+    while(!q.empty())q.pop();
+    for(int i=1;i<=n;i++)pre[i]=-1;
+    pre[s]=0;
+    q.push(s);
+    flow[s]=INF;
+    while(!q.empty()){
+        int v=q.front();
+        q.pop();
+        if(v==t)break; //找到了增广路径
+        for(int i=1;i<=n;i++){
+            if(m[v][i]>0&&pre[i]==-1){
+                pre[i]=v;  //记录前驱
+                flow[i]=min(flow[v],m[v][i]);  //关键:迭代的找到增量
+                q.push(i);
+            }
+        }
+    }
+    if(pre[t]==-1)return -1; //残留图中不再存在增广路径
+    else return flow[t];
+}
+void EK(int s,int t){
+    int inc=0;
+    while((inc=bfs(s,t))!=-1){
+        int k=t;
+        while(k!=s){
+            int last=pre[k];
+            m[last][k]-=inc;
+            m[k][last]+=inc;
+            k=last;
+        }
+        maxflow+=inc;
+    }
+}
+void init(){
+     memset(m,0,sizeof(m));
+    memset(flow,0,sizeof(flow));
+    maxflow=0;
+}
+int main(){
+    int t,ca=1;
+    cin>>t;
+    while(t--){
+    cin>>n>>ma;
+    init();
+    for(int i=1;i<=ma;i++){
+        int z,x,y;
+        cin>>x>>y>>z;
+        m[x][y]+=z;
+    }
+    EK(1,n);
+    cout<<"Case "<<ca++<<": "<<maxflow<<endl;
+    }
+}
