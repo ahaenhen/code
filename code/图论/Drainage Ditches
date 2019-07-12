@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
-int n,ma;
+int n ,ma;
 const int INF=0x7fffff;
 const int maxn=204;
 queue<int>q;
