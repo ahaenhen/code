@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int INF=0x3f3f3f3f;
+struct node{
+    int id,val;
+}a[255];
+bool cmp(node a,node b){
+    return a.val<b.val;
+}
+int dis[255][255],ans[255][255],n,m,t,u,v,w;
+void Floyd(){
+    for(int k=0;k<n;k++)
+        for(int i=0;i<n;i++)
+            for(int j=0;j<n;j++){
+                dis[a[i].id][a[j].id]=min(dis[a[i].id][a[k].id]+dis[a[k].id][a[j].id],dis[a[i].id][a[j].id]);
+                ans[a[i].id][a[j].id]=min(ans[a[i].id][a[j].id],dis[a[i].id][a[j].id]+max(a[i].val,max(a[j].val,a[k].val)));
+            }
+}
+int main(){
+    cin>>n>>m>>t;
+    memset(dis,INF,sizeof(dis));
+    memset(ans,INF,sizeof(ans));
+    for(int i=0;i<n;i++){
+        scanf("%d",&ans[i][i]);
+        a[i].val=ans[i][i];
+        a[i].id=i;
+        dis[i][i]=0;
+    }
+    sort(a,a+n,cmp);
+    for(int i=0;i<m;i++){
+        scanf("%d%d%d",&u,&v,&w);
+        dis[u-1][v-1]=dis[v-1][u-1]=min(dis[u-1][v-1],w);
+    }
+    Floyd();
+    for(int i=0;i<t;i++){
+        scanf("%d%d",&u,&v);
+        cout<<ans[u-1][v-1]<<endl;
+    }
+}
