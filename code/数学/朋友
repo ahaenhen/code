@@ -1,0 +1,34 @@
+#include<bits/stdc++.h>
+using namespace std;
+int ans[40004];
+//vector<int>e[40003];
+map<pair<int,int>,int>e;
+int main(){
+    int t,n,m,x,y,a,f;
+    cin>>t;
+    while(t--){
+        cin>>n>>m;
+        e.clear();
+        memset(ans,0,sizeof(ans));
+        for(int i=0;i<n-1;i++){
+            scanf("%d%d%d",&x,&y,&a);
+            ans[x]+=a;ans[y]+=a;
+            e[make_pair(x,y)]=e[make_pair(y,x)]=a;
+        }
+        for(int i=0;i<m;i++){
+            scanf("%d",&f);
+            if(!f){
+                scanf("%d",&x);
+                if(ans[x]%2)cout<<"Girls win!"<<endl;
+                else cout<<"Boys win!"<<endl;
+            }
+            else{
+                scanf("%d%d%d",&x,&y,&a);
+                if(e[make_pair(x,y)]==a)continue;
+                if(e[make_pair(x,y)])ans[x]--,ans[y]--;
+                else ans[x]++,ans[y]++;
+                e[make_pair(x,y)]=e[make_pair(y,x)]=a;
+            }
+        }
+    }
+}
