@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+#define maxn 10005
+#define inf 0x3f3f3f
+typedef long long LL;
+using namespace std;
+const int mod = 1e8 + 7;
+char s[maxn];
+int dp[maxn];
+int main(){
+	int t;
+	scanf("%d", &t);
+	while (t--){
+		scanf("%s", s + 1);
+		int n = strlen(s + 1);
+		int ans = 0;
+		for (int i = 0; i <= 2 && i <= s[1] - '0'; i++){
+			dp[1] = i;
+			bool jud = true;
+			for (int j = 2; j <= n; j++){
+				int num = s[j - 1] - '0' - dp[j - 1] - dp[j - 2];
+				if (num > 2 || num < 0){
+					jud = false;
+					break;
+				}
+				dp[j] = num;
+			}
+			if (jud&&dp[n - 1] + dp[n] == s[n] - '0'){
+				int now = 1;
+				for (int j = 1; j <= n; j++){
+					if (dp[j] == 1)
+						now *= 2;
+					else
+						now *= 1;
+					now %= mod;
+				}
+				ans += now;
+				ans %= mod;
+			}
+		}
+		printf("%d\n", ans);
+	}
+}
