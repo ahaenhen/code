@@ -1,0 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define inf 100000000
+const int maxn=222;
+int cnt,head[maxn],work[maxn],dis[maxn];
+struct node{
+    int u,v,b,c,next;
+}e[maxn*maxn*3];
+
+void add(int u,int v,int b,int c){
+    e[cnt].u=u;e[cnt].v=v;e[cnt].b=b;e[cnt].c=c;
+    e[cnt].next=head[u];
+    head[u]=cnt++;
+
+    e[cnt].u=v;e[cnt].v=u;e[cnt].b=0;e[cnt].c=c;
+    e[cnt].next=head[v];
+    head[v]=cnt++;
+}
+int bfs(int s,int t){//重新建图，按层次建图
+    memset(dis,-1,sizeof(dis));
+    queue<int>q;
+    q.push(s);
+    dis[s]=0;
+    while(!q.empty()){
+        int u=q.front();
+        q.pop();
+        for(int i=head[u];i!=-1;i=e[i].next){
+            int v=e[i].v;
+            if(e[i].b&&dis[v]==-1){
+                dis[v]=dis[u]+1;
+                q.push(v);
+                if(v==t)return 1;
+            }
+        }
+    }
+    return 0;
+}
+int dfs(int cur,int a,int t){//查找路径上的最小流量
+    if(cur==t)return a;
+    for(int &i=work[cur];i!=-1;i=e[i].next){
+        int v=e[i].v;
+        if(e[i].b&&dis[v]==dis[cur]+1){
+            int tt=dfs(v,min(a,e[i].b),t);
+            if(tt){
+                e[i].b-=tt;
+                e[i^1].b+=tt;
+                return tt;
+            }
+        }
+    }
+    return 0;
+}
+int dinic(int s,int t){
+    int ans=0;
+    while(bfs(s,t)){
+        memcpy(work,head,sizeof(head));
+        while(int tt=dfs(s,inf,t))ans+=tt;
+    }
+    return ans;
+}
+
+int main(){
+    int n,m,tai;
+    while(~scanf("%d%d",&n,&m)){
+        cnt=0;memset(head,-1,sizeof(head));
+        int source=0,sink=n+1,sum=0;
+        while(m--){
+            int x,y,b,c;
+            scanf("%d%d%d%d",&x,&y,&b,&c);
+            add(x,y,c-b,c);
+            add(source,y,b,c);
+            add(x,sink,b,c);
+            sum+=b;
+        }
+        int ans=dinic(source,sink);
+        if(ans<sum)printf("NO\n");
+        else{
+            printf("YES\n");
+            for(int i=0;i<cnt;i+=6)printf("%d\n",e[i].c-e[i].b);
+        }
+    }
+}
