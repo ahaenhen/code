@@ -1,0 +1,55 @@
+#include <cstring>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+#include <queue>
+#define inf 0x3f3f3f3f
+using namespace std;
+const int maxn=5003;
+
+int dis[maxn],dis2[maxn],n,r,a,b,d;
+struct node{
+    int v,c;
+    bool operator <(const node &a)const{
+        return c>a.c;
+    }
+};
+vector<node>m[maxn];
+
+void dj(){
+    priority_queue<node>q;
+    fill(dis,dis+n+1,inf);
+    fill(dis2,dis2+n+1,inf);
+    q.push(node{1,0});
+    dis[1]=0;
+    while(!q.empty()){
+        node t=q.top();
+        q.pop();
+        int u=t.v;
+        if(t.c>dis2[t.v])continue;
+        for(int i=0;i<m[u].size();i++){
+            int v=m[u][i].v,c=m[u][i].c;
+            int d=t.c+c;
+            if(dis[v]>d){
+                swap(dis[v],d);
+                q.push(node{v,dis[v]});
+            }
+            if(dis2[v]>d&&dis[v]<d){
+                dis2[v]=d;
+                q.push(node{v,dis2[v]});
+            }
+        }
+    }
+    printf("%d\n",dis2[n]);
+}
+int main(){
+    cin>>n>>r;
+    for(int i=0;i<=n;i++)m[i].clear();
+    for(int i=1;i<=r;i++){
+        scanf("%d%d%d",&a,&b,&d);
+        m[a].push_back(node{b,d});
+        m[b].push_back(node{a,d});
+    }
+    dj();
+
+}
