@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std ;
+#define ll long long
+struct node{
+    int v,s;
+}a[100003];
+bool cmp(node a,node b){
+    return a.s>b.s;
+}
+int main(){
+    int n;
+    priority_queue<int, vector<int>,greater<int> >p;//小根堆；
+    cin>>n;
+    for(int i=0;i<n;i++){
+        scanf("%d%d",&a[i].v,&a[i].s);
+    }
+    sort(a,a+n,cmp);
+    ll ans=0,s=0;
+    for(int i=0;i<n;i++){
+        s+=a[i].v;
+        p.push(a[i].v);
+        while(p.size()>a[i].s){
+            s-=p.top(),p.pop();
+        }
+        ans<s&&(ans=s);
+    }
+    cout<<ans<<endl;
+}
