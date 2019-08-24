@@ -22,7 +22,7 @@ int main(){
         while(p.size()>a[i].s){
             s-=p.top(),p.pop();
         }
-        ans<s&&(ans=s);
+        ans<s&&(ans=s);//相当于ans=max(ans,s);
     }
     cout<<ans<<endl;
 }
