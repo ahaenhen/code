@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std ;
+const int N=10001;
+int X[N],Y[N];
+  
+int main(){
+    int a,b,x,y,z,n,m,sx,sy,sz,ax,ay,d;
+    scanf("%d%d%d%d",&n,&m,&a,&b);
+    //x=i,y=(j+1)div 2,z=i-j div 2;
+    sx=a;sy=(b+1)/2;sz=a-b/2;
+    d=INT_MAX;
+    for(int i=1;i<=m;i++){
+        scanf("%d%d",&a,&b);
+        x=a;y=(b+1)/2;z=a-b/2;
+        int tmp=abs(x-sx)+abs(y-sy)+abs(z-sz);
+        if((tmp<d)||(tmp==d && ax>a)||(tmp==d && ax==a && ay>b))
+            ax=a,ay=b,d=tmp;
+    }
+    printf("%d %d\n",ax,ay);
+    printf("%d\n",d+1);
+}
