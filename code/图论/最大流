@@ -1,0 +1,81 @@
+#include<bits/stdc++.h>
+#define ten(a) ((a<<(1<<1|1))+(a<<1))
+#define asc ((1<<1|1)<<(1<<(1<<1)))
+#define re register //把数据放寄存器里
+using namespace std;
+const int MAXN=10010;
+struct Edge {
+	int next,to,w;
+} e[200010];
+int head[MAXN],dep[MAXN],heap[MAXN],gap[MAXN],flow[MAXN],n,s,t,tot=1;
+//gap这里不是找断层而是找断的高度
+//heap[MAXN] 同字面意思 (大根) 堆.堆存的虽然是节点编号 但是要根据节点的深度来排序
+short o[MAXN];//o[MAXN] 判断某节点是否在堆里面 0 即没有 1 即有
+inline void r(re int &x){
+	re char q=getchar(); x=0;
+	while(q<'0'||q>'9')q=getchar();
+	while(q>='0'&&q<='9')x=ten(x)+q-asc,q=getchar();
+}
+void add(re int x,re int y,re int z) {
+	e[++tot].next=head[x],head[x]=tot,e[tot].to=y,e[tot].w=z;
+	e[++tot].next=head[y],head[y]=tot,e[tot].to=x;
+}
+void push(re int p) {
+	heap[++tot]=p;
+	o[p]=1;
+	re int now=tot;
+	//常规大根堆操作
+	while(now>1&&dep[heap[now]]>dep[heap[now>>1]]) {
+		swap(heap[now],heap[now>>1]);
+		now>>=1;
+	}
+}
+void pop(){
+	o[heap[1]]=0;
+	heap[1]=heap[tot--];
+	re int now=1,nxt;
+	while((now<<1<=tot&&dep[heap[now]]<dep[heap[now<<1]])
+	||((now<<1|1)<=tot&&dep[heap[now]]<dep[heap[now<<1|1]])) {
+		nxt=now<<1;
+		if(nxt+1<=tot&&dep[heap[nxt]]<dep[heap[nxt+1]])++nxt;
+		swap(heap[now],heap[nxt]);
+		now=nxt;
+	}
+}
+int preflow() {
+	dep[s]=n;
+	for(re int a=head[s];a;a=e[a].next)flow[s]+=e[a].w;
+	heap[++tot]=s;
+	o[s]=1;
+	while(tot>0) {
+		re int p=heap[1];
+		pop();
+		if (!flow[p]) continue;
+			for(re int a=head[p],b=e[a].to;a;a=e[a].next,b=e[a].to)
+			if((dep[p]==dep[b]+1||p==s)&&e[a].w) {
+				int minflow=min(flow[p],e[a].w);
+				flow[b]+=minflow;
+				flow[p]-=minflow;
+				e[a].w-=minflow;
+				e[a^1].w+=minflow;
+				if(!o[b]&&b!=s&&b!=t)push(b);//若推到的点不在堆里 压进去
+			}
+		if(flow[p]>0&&p!=s&&p!=t){//遍历完了 能推的点都推了还有盈余 加特判
+			if(!--gap[dep[p]])for(int a=1;a<=n;++a)
+			if(a!=s&&a!=t&&dep[p]<dep[a]&&dep[a]<=n)
+			dep[a]=n+1;
+			++gap[++dep[p]];
+			push(p);
+		}
+	}
+	return flow[t];
+}
+int main() {
+	int m,x,y,z;
+	r(n),r(m),r(s),r(t); 
+	while(m--)r(x),r(y),r(z),add(x,y,z);
+	tot=0;
+	printf("%d",preflow());
+	return 0;
+}
+
