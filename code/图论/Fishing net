@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n, m;
+bool g[1024][1024], used[1024];//used是看是否已被标记
+int lable[1024], inv[1024]; //lable是计数的，inv是序列的
+
+void mcs() {
+    memset(used, false, sizeof(used));
+    used[1] = true;
+    for (int num=n-1; num>0; num--) {//找一个与已标记点连接最多的一个点
+        memset(lable, 0, sizeof(lable));
+        for (int i=1; i<=n; i++){
+            if (!used[i]){
+                for (int j=1; j<=n-num; j++){
+                    if (g[i][inv[n-j+1]])
+                        lable[i]++;//记住每个点与已标记点的连通数
+                }
+            }
+        }
+        int maxv = 0, max;
+        for (int i=1; i<=n; i++) {
+            if (lable[i] > maxv) {//找到最多的一个
+                maxv = lable[i];
+                max = i;
+            }
+        }
+        inv[num] = max;//序列中第num个是图里的max号点
+        used[max] = true;
+    }
+
+}
+bool check() {//检查是否满足序列的条件
+    int temp[1024];
+    for (int i=1; i<=n; i++) {
+        memset(temp, 0, sizeof(temp));
+        int t = 0;
+        for (int j=i+1; j<=n; j++) {//找出序列标号比该点大的与该点连通的点
+            if (g[inv[i]][inv[j]]) {
+                t++;
+                temp[t] = inv[j];
+            }
+        }
+        for (int j=2; j<=t; j++) {//选出的点中标号最小的点是否与其他选的点连通
+            if (!g[temp[j]][temp[1]])
+                return false;//若不连通，则不是弦图
+        }
+    }
+    return true;
+}
+
+int main() {
+    int n,m;
+    while (scanf("%d%d", &n, &m) == 2) {
+        if (n == 0 && m == 0) break;
+        memset(g, false, sizeof(g));
+
+        int a, b;
+        for (int i=0; i<m; i++) {
+            scanf("%d%d", &a, &b);
+            g[a][b] = g[b][a] = true;
+        }
+        inv[n] = 1;
+        mcs();
+        if (check()) printf("Perfect\n");
+        else printf("Imperfect\n");
+        printf("\n");
+    }
+    return 0;
+}
+
+
+
