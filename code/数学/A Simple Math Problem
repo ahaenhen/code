@@ -1,0 +1,16 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef  long long ll;
+ll gcd(ll a,ll b){
+    if(b==0) return a;
+    else return gcd(b,a%b);
+}
+int main(){
+    long long a,b;
+    while(~scanf("%lld%lld",&a,&b)){
+        ll t=gcd(a,b);
+        ll x=(a-sqrt(a*a-4*t*b))/2,y=a-x;
+        if(x*y==gcd(x,y)*b)printf("%lld %lld\n",x,y);
+        else puts("No Solution");
+    }
+}
