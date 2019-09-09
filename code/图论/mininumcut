@@ -1,0 +1,56 @@
+#include<cstdio>
+#include<cmath>
+#include<cstring>
+using namespace std;
+#define inf 0x3f3f3f3f
+int mp[502][502],wage[502];
+int n,m,u,v,w,S,T,minc=inf;
+bool combine[502],vis[502];
+
+void searchh(){
+    memset(vis,0,sizeof(vis));
+    memset(wage,0,sizeof(wage));
+    int t=1000;
+    for(int i=0;i<n;i++){
+        int maxn=-inf;
+        for(int j=0;j<n;j++){
+            if(!vis[j]&&!combine[j]&&maxn<wage[j]){
+                maxn=wage[j];
+                t=j;
+            }
+        }
+        if(T==t){minc=wage[T];return;}
+        vis[t]=1;
+        S=T,T=t;
+        for(int j=0;j<n;j++){
+            if(!vis[j]&&!combine[j])
+                wage[j]+=mp[T][j];
+        }
+    }
+    minc=wage[T];
+}
+int mincut(){
+    int ans=inf;
+    memset(combine,0,sizeof(combine));
+    for(int i=0;i<n-1;i++){
+        S=T=-1;
+        searchh();
+        combine[T]=true;
+        ans=ans>minc?minc:ans;
+        for(int j=0;j<n;j++){
+            mp[S][j]+=mp[T][j];
+            mp[j][S]+=mp[j][T];
+        }
+    }
+    return ans;
+}
+int main(){
+    while(~scanf("%d%d",&n,&m)){
+        memset(mp,0,sizeof(mp));
+        for(int i=0;i<m;i++){
+            scanf("%d%d%d",&u,&v,&w);
+            mp[u][v]+=w;mp[v][u]+=w;
+        }
+        printf("%d\n",mincut());
+    }
+}
