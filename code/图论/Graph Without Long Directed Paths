@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=200000+2;
+vector<int>ma[maxn];
+int co[maxn];
+struct node{
+    int u;
+    int v;
+}mp[maxn];
+int check(int no){
+    queue<int>q;
+    q.push(no);
+    co[no]=1;
+    memset(co,-1,sizeof(co));
+    while(!q.empty()){
+        int t=q.front();
+        q.pop();
+        for(int i=0;i<ma[t].size();i++){
+            if(co[ma[t][i]]==-1){
+                co[ma[t][i]]=(co[t]+1)%2;
+                q.push(ma[t][i]);
+            }
+            else if(co[ma[t][i]]==co[t])return 0;
+        }
+    }
+    return 1;
+}
+int main(){
+    int n,m,u,v;
+    scanf("%d%d",&n,&m);
+    for(int i=0;i<m;i++){
+        scanf("%d%d",&u,&v);
+        mp[i].u=u;
+        mp[i].v=v;
+        ma[u].push_back(v);
+        ma[v].push_back(u);
+    }
+    if(check(1)){
+        printf("YES\n");
+        for(int i=0;i<m;i++){
+            if(co[mp[i].u])printf("1");
+            else printf("0");
+        }
+    }
+    else puts("NO\n");
+
+}
