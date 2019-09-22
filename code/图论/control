@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n,m;
+const int inf=0x3f3f3f3f;
+const int maxn=1200;
+int ma[maxn][maxn],pre[maxn],flow[maxn],maxflow,F[maxn][maxn];
+void EK(int s,int t){
+    memset(F,0,sizeof(F));
+    queue<int>q;
+    while(1){        //找增广路径
+        while(!q.empty())q.pop();
+        memset(flow,0,sizeof(flow));
+        memset(pre,0,sizeof(pre));
+        q.push(s);
+        flow[s]=inf;
+        while(!q.empty()){
+            int v=q.front();
+            q.pop();
+            //if(v==t)break; //找到了增广路径
+            for(int i=0;i<n*2+1;i++){
+                if(!flow[i]&&ma[v][i]>F[v][i]){
+                    pre[i]=v;  //记录前驱
+                    flow[i]=min(flow[v],ma[v][i]-F[v][i]);  //关键:迭代的找到增量
+                    q.push(i);
+                }
+            }
+        }
+        if(flow[t+n]==0)break;
+        maxflow+=flow[t+n];
+        for(int i=t+n;i!=s;i=pre[i]){
+            F[pre[i]][i]+=flow[t];
+            F[i][pre[i]]-=flow[t];
+        }
+    }
+}
+int main(){
+    int s,d,w,u,v;
+    while(~scanf("%d%d",&n,&m)){
+        maxflow=0;
+        scanf("%d%d",&s,&d);
+        memset(ma,0,sizeof(ma));
+        for(int i=1;i<=n;i++){
+            scanf("%d",&w);
+            ma[i][i+n]=w;
+        }
+        for(int i=0;i<m;i++){
+            scanf("%d%d",&u,&v);
+            ma[u+n][v]=inf;ma[v+n][u]=inf;
+        }
+        EK(s,d);
+        printf("%d\n",maxflow);
+    }
+}
