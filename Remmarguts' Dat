@@ -1,0 +1,112 @@
+#include <iostream>
+#include <stdio.h>
+#include <cstring>
+#include <queue>
+using namespace std;
+
+int const maxn=100005;
+int const maxm=100005;
+int const INF=0x3f3f3f3f;
+
+int n,m,S,E,T,k;
+int p1[maxn],p2[maxn],eid1,eid2;
+bool vis[maxm];
+int dis[maxm];
+struct node{
+    int to,next,cost;
+}e1[maxn],e2[maxn];
+
+struct node2{
+    int to,g,f;
+    bool operator<(const node2 &r ) const{
+        if(r.f==f)return r.g<g;
+        return r.f<f;
+    }
+};
+void init(){
+    eid1=1;
+    eid2=1;
+    memset(p1,-1,sizeof(p1));
+    memset(p2,-1,sizeof(p2));
+}
+
+void insert1(int u,int v,int w){ //正向存图
+    e1[eid1].to=v;
+    e1[eid1].cost=w;
+    e1[eid1].next=p1[u];
+    p1[u]=eid1++;
+}
+void insert2(int u,int v,int w){ //反向存图
+    e2[eid2].to=v;
+    e2[eid2].cost=w;
+    e2[eid2].next=p2[u];
+    p2[u]=eid2++;
+}
+void spfa(int s){ //处理出从终点到所有点的最短路
+    queue<int>Q;
+    memset(vis,0,sizeof(vis));
+    memset(dis,INF,sizeof(dis));
+    dis[s]=0;
+    vis[s]=1;
+    Q.push(s);
+    while(!Q.empty()){
+        int u=Q.front();
+        vis[u]=0;
+        Q.pop();
+        for(int i=p2[u];i!=-1;i=e2[i].next){
+            int v=e2[i].to;
+            if(dis[v]>dis[u]+e2[i].cost){
+                dis[v]=dis[u]+e2[i].cost;
+                if(!vis[v]){
+                    vis[v]=1;
+                    Q.push(v);
+                }
+            }
+        }
+
+    }
+}
+
+int Astar(){ //A*求k短路
+    node2 e,now;
+    int cnt=0;
+    priority_queue<node2>Q;
+    if(S==E)k++;
+    if(dis[S]==INF) return -1;
+    e.to=S;
+    e.g=0;
+    e.f=e.g+dis[e.to];
+    Q.push(e);
+    while(!Q.empty()){
+        e=Q.top();
+        Q.pop();
+        if(e.to==E)cnt++;
+        if(cnt==k)return e.g;
+        int u=e.to;
+        for(int i=p1[u];i!=-1;i=e1[i].next){
+            now.to=e1[i].to;
+            now.g=e.g+e1[i].cost;
+            now.f=now.g+dis[now.to];
+            Q.push(now);
+            //if(now.g>T) return -1;
+        }
+    }
+    return -1;
+}
+int main(){
+    //std::ios::sync_with_stdio(false);
+        while(~scanf("%d%d",&n,&m)){
+        init();
+        //起点，终点，k短路，限定条件
+        for(int i=1;i<=m;i++){
+            int u,v,w;
+            scanf("%d%d%d",&u,&v,&w);
+            insert1(u,v,w);
+            insert2(v,u,w);
+        }
+        scanf("%d%d%d",&S,&E,&k);
+        spfa(E);
+        int ans=Astar();
+        printf("%d\n",ans);   //输出k短路长度
+    }
+}
