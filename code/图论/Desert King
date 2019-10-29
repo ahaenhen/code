@@ -1,0 +1,55 @@
+#include<iostream>
+#include<cstdio>
+#include<cmath>
+using namespace std;
+const int MAX_N = 1005;  // 最大顶点数
+const int MAX_M = 1005;  // 最大边数
+#define INF 99999999
+struct edge{
+    int x,y,z;
+}a[MAX_M];
+double cost[MAX_N][MAX_N];//cost[u][v] 表示边e=(u,v)的权值，不存在为INF
+double mincost[MAX_N]; //从集合T出发的边到每个顶点的最小权值
+bool used[MAX_N];    //顶点i是否包含在集合T中
+int n;           //顶点数
+double prim(double mid){
+     for(int i=1;i<=n;i++){
+        mincost[i]=INF;
+         used[i]=false;
+         for(int j=1;j<=n;j++){
+            cost[i][j]=(double)abs(a[i].z-a[j].z);
+            cost[i][j]-=mid*sqrt(1.0*(a[i].x-a[j].x)*(a[i].x-a[j].x)+(a[i].y-a[j].y)*(a[i].y-a[j].y));
+         }
+      }
+      mincost[1]=0;
+      double res=0;
+      while(true){
+           int v=-1;    //从不属于T的顶点中选取T到其权值最小的顶点
+           for(int u=1;u<=n;u++)
+               if(!used[u] && (v==-1 || mincost[u]<mincost[v]))
+                    v=u;
+           if(v==-1) break;  //没有可达点
+           used[v]=true;   //把顶点v加入x
+           res += mincost[v];  //更新结果
+           for(int u=1;u<=n;u++){
+                if(used[u])continue;
+                mincost[u]=min(mincost[u],cost[v][u]);
+           }
+
+      }
+      return res;    //返回最小生成树总权值
+ }
+int main(){
+    while(scanf("%d",&n)&&n){
+        double l=0.0,esp=0.0001,r=100.0;
+        for(int i=1;i<=n;i++){
+            scanf("%d%d%d",&a[i].x,&a[i].y,&a[i].z);
+        }
+        while(r-l>esp){
+            double mid=(r+l)/2;
+            if(prim(mid)>0)l=mid;
+            else r=mid;
+        }
+        printf("%.3f\n",l);
+    }
+}
