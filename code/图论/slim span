@@ -1,0 +1,44 @@
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+const int MAX_N =5002;  // 最大顶点数
+const int MAX_M =5002;  // 最大边数
+struct edge {
+    int u, v, w;
+}e[MAX_M];
+int fa[MAX_N], n, m;  // fa 数组记录了并查集中结点的父亲
+bool cmp(edge a,edge b) {
+    return a.w < b.w;
+}
+int findd(int x){
+    if(x!=fa[x]) return fa[x]=findd(fa[x]);
+    return x;
+}
+int Kruskal(){
+    int ans1=0,ans2=0; 
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++)fa[j] = j;
+        for(int j=i;j<=m;j++){
+            int u=findd(e[j].u),v=findd(e[j].v);fa[v]=u;
+            if(ans1&&e[j].w-e[i].w>=ans2-ans1)break;
+            bool f=0;
+            for(int k=1;k<=n;k++)if(findd(k)!=findd(1)){f=1;break;}
+            if(!f){ans1=e[i].w;ans2=e[j].w;break;}
+        }
+        if(ans1==0){return -1;}
+    }
+    return ans2-ans1;
+}
+int main() {
+    while(~scanf("%d%d", &n, &m)&&n+m){  // n 为点数，m 为边数
+        for (int i = 1; i <= m; i++) {
+            scanf("%d%d%d", &e[i].u, &e[i].v, &e[i].w);  // 用边集数组存放边，方便排序和调用
+        }
+        if(m==0)puts("-1");
+        sort(e + 1, e + m + 1, cmp);  // 对边按边权进行升序排序
+        cout<<Kruskal()<<endl;
+    }
+    return 0;
+}
