@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+using namespace std;
+priority_queue<int>q;
+vector<int>edge[30010],ans;
+int in[30010],d[30010];
+int T,n,m;
+void init(){
+    for(int i=1;i<=n;i++){
+        edge[i].clear();in[i]=0;
+    }
+    while(!q.empty())q.pop();
+    ans.clear();
+}
+int solve(int x){
+    int i,j;
+    memcpy(d,in,sizeof(in));
+    d[x]--;
+    for(int i=1;i<=n;i++)if(d[i]==0)q.push(i);
+    while(!q.empty()){
+        int p=q.top();q.pop();
+        ans.push_back(p);
+        for(int i=0;i<edge[p].size();i++){
+            int v=edge[p][i];
+            d[v]--;
+            if(d[v]==0)q.push(v);
+        }
+    }
+    //for(int i=ans.size()-1;i>0;i--)printf("%d ",ans[i]);
+    return ans.size()==n;
+}
+
+int main(){
+        int a,b;
+        scanf("%d%d",&n,&m);
+        init();
+        while(m--){
+            scanf("%d%d",&a,&b);
+            edge[a].push_back(b);
+            in[b]++;
+        }
+        for(int i=1;i<=n;i++){
+            ans.clear();
+            if(solve(i)){puts("YES");return 0;}
+        }
+        puts("NO");
+}
